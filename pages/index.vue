@@ -22,9 +22,10 @@ const navigate = (id: string) => navigateTo(`/equipment/${id}`)
   <section class="page">
     <div class="metrics">
       <article><span>验收项</span><strong>{{ store.stats.total }}</strong><small>按设备树逐项检查</small></article>
-      <article><span>已合格</span><strong>{{ store.stats.passed }}</strong><small>测试条件与证据齐全</small></article>
-      <article><span>不合格或待复验</span><strong>{{ store.stats.failed }}</strong><small>不可直接签署</small></article>
+      <article><span>已合格</span><strong>{{ store.stats.passed }}</strong><small>复验通过自动回写</small></article>
+      <article><span>不合格或待复验</span><strong>{{ store.stats.failed }}</strong><small>未通过/证据不足不可签署</small></article>
       <article><span>未闭环缺陷</span><strong>{{ store.stats.openDefects }}</strong><small>多方责任协同</small></article>
+      <article><span>带条件接受</span><strong>{{ store.stats.conditional }}</strong><small>保留限制与复查日期</small></article>
     </div>
     <div class="toolbar">
       <InputText v-model="store.keyword" placeholder="搜索设备、编号、验收项或状态" />

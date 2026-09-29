@@ -1,5 +1,6 @@
 export type InspectionStatus = '待检查' | '合格' | '不合格' | '待复验'
 export type DefectStatus = '待分派' | '整改中' | '待联合复验' | '已关闭' | '带条件通过'
+export type RetestConclusion = '通过' | '未通过' | '证据不足'
 export type Party = '建设单位' | '设备厂家' | '运维单位'
 
 export interface AcceptanceItem {
@@ -11,6 +12,12 @@ export interface AcceptanceItem {
   measured: string
   evidence: string
   version: number
+  /** 最近一次回写该验收项的缺陷编号 */
+  sourceDefectId?: string
+  /** 带条件接受时保留的限制条件 */
+  conditionalNote?: string
+  /** 带条件接受时保留的复查日期(YYYY-MM-DD) */
+  reviewDate?: string
 }
 
 export interface Certificate {
@@ -41,6 +48,15 @@ export interface PartyReply {
   repliedAt: string
 }
 
+export interface RetestRecord {
+  round: number
+  passed: boolean
+  conclusion: RetestConclusion
+  result: string
+  tester: string
+  testedAt: string
+}
+
 export interface AcceptanceDefect {
   id: string
   equipmentId: string
@@ -51,8 +67,10 @@ export interface AcceptanceDefect {
   owner: string
   dueDate: string
   replies: PartyReply[]
-  retests: Array<{ round: number; passed: boolean; result: string; tester: string; testedAt: string }>
+  retests: RetestRecord[]
   decisionNote: string
+  /** 带条件接受时的复查日期(YYYY-MM-DD) */
+  reviewDate?: string
   version: number
 }
 
@@ -64,6 +82,11 @@ export interface Plant {
   commissioningDate: string
   status: '验收中' | '待复核' | '已签署'
   version: number
+  signedAt?: string
+  /** 签署后更正的原因（仅在更正办理期间保留） */
+  correctionReason?: string
+  /** 本次更正所基于的已交付版本号 */
+  correctionBaseVersion?: number
 }
 
 export interface AuditEntry {
@@ -73,4 +96,25 @@ export interface AuditEntry {
   operator: string
   detail: string
   createdAt: string
+  /** 该操作对应的交付版本（工作版本）号 */
+  version?: number
+}
+
+export interface DeliverySnapshot {
+  plant: Plant
+  equipment: EquipmentNode[]
+  defects: AcceptanceDefect[]
+  audit: AuditEntry[]
+  preflight: { blocking: string[]; warnings: string[] }
+}
+
+export interface DeliveryVersion {
+  version: number
+  signedAt: string
+  signedBy: string
+  note: string
+  /** 若为签署后更正重新锁定，记录所基于的旧交付版本号 */
+  correctionOfVersion?: number
+  correctionReason?: string
+  snapshot: DeliverySnapshot
 }
