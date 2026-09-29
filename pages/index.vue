@@ -20,6 +20,7 @@ const navigate = (id: string) => navigateTo(`/equipment/${id}`)
 
 <template>
   <section class="page">
+    <div v-if="store.frozen" class="freeze-banner"><i class="pi pi-lock" /><span>交付版本V{{ store.plant.version }}已签署冻结，设备、证书与缺陷只读；需在“签署与审计”页写明原因申请更正，另存新版本后方可修改。</span></div>
     <div class="metrics">
       <article><span>验收项</span><strong>{{ store.stats.total }}</strong><small>按设备树逐项检查</small></article>
       <article><span>已合格</span><strong>{{ store.stats.passed }}</strong><small>测试条件与证据齐全</small></article>

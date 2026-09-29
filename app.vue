@@ -19,7 +19,7 @@ onMounted(() => store.hydrate())
         <NuxtLink to="/defects"><span>缺陷闭环</span><small>{{ store.stats.openDefects }}项</small></NuxtLink>
         <NuxtLink to="/audit"><span>签署与审计</span><small>V{{ store.plant.version }}</small></NuxtLink>
       </nav>
-      <div class="aside-state"><span>并网前完整性检查</span><strong>{{ store.preflight.allowed ? '允许申请复核' : `${store.preflight.blocking.length}项阻断` }}</strong><small>{{ store.plant.name }}</small></div>
+      <div class="aside-state"><span>并网前完整性检查</span><strong>{{ store.frozen ? `V${store.plant.version}已冻结` : store.preflight.allowed ? '允许签署锁定' : `${store.preflight.blocking.length}项阻断` }}</strong><small>{{ store.plant.name }}</small></div>
     </aside>
     <main>
       <header class="top"><div><span>电站工程中心 / 验收与交付</span><h1>{{ title }}</h1></div><div class="top-user"><small>验收负责人</small><strong>陆川</strong></div></header>

@@ -11,6 +11,8 @@ export interface AcceptanceItem {
   measured: string
   evidence: string
   version: number
+  /** 缺陷复验/验收决定回写说明，人工重新录入后会清空 */
+  syncNote?: string
 }
 
 export interface Certificate {
@@ -41,6 +43,17 @@ export interface PartyReply {
   repliedAt: string
 }
 
+export interface DefectRetest {
+  round: number
+  passed: boolean
+  result: string
+  evidence: string
+  /** 复验证据是否充分；不充分时即使初测合格也不能关闭缺陷 */
+  evidenceSufficient: boolean
+  tester: string
+  testedAt: string
+}
+
 export interface AcceptanceDefect {
   id: string
   equipmentId: string
@@ -51,8 +64,10 @@ export interface AcceptanceDefect {
   owner: string
   dueDate: string
   replies: PartyReply[]
-  retests: Array<{ round: number; passed: boolean; result: string; tester: string; testedAt: string }>
+  retests: DefectRetest[]
   decisionNote: string
+  /** 带条件接受时的复查日期 */
+  reviewDate?: string
   version: number
 }
 
@@ -73,4 +88,22 @@ export interface AuditEntry {
   operator: string
   detail: string
   createdAt: string
+  /** 该操作发生时所属的交付工作版本 */
+  plantVersion?: number
+}
+
+/** 签署时冻结的交付版本快照 */
+export interface DeliveryPackage {
+  version: number
+  signedAt: string
+  signer: string
+  plant: Plant
+  equipment: EquipmentNode[]
+  defects: AcceptanceDefect[]
+  audit: AuditEntry[]
+  /** 是否已经被更新的交付版本替代 */
+  superseded: boolean
+  /** 若为签署后更正再签署，记录来源版本与原因 */
+  correctionOf?: number
+  correctionReason?: string
 }
